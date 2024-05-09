@@ -12,8 +12,9 @@ class WeatherScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Placeholder(
-                child: AspectRatio(aspectRatio: 1),
+              AspectRatio(
+                aspectRatio: 1,
+                child: Placeholder(),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
