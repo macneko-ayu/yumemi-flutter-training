@@ -5,39 +5,27 @@ class WeatherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Placeholder(
+              Placeholder(
                 child: AspectRatio(aspectRatio: 1),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        '** ℃',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(color: Colors.blue),
-                      ),
+                    _TemperatureText(
+                      text: '** ℃',
+                      color: Colors.blue,
                     ),
-                    Expanded(
-                      child: Text(
-                        '** ℃',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(color: Colors.red),
-                      ),
+                    _TemperatureText(
+                      text: '** ℃',
+                      color: Colors.red,
                     ),
                   ],
                 ),
@@ -45,6 +33,28 @@ class WeatherScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _TemperatureText extends StatelessWidget {
+  const _TemperatureText({
+    required String text,
+    required Color color,
+  })  : _text = text,
+        _color = color;
+
+  final String _text;
+  final Color _color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Text(
+        _text,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
       ),
     );
   }
