@@ -21,13 +21,17 @@ class WeatherScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
-                    _TemperatureText(
-                      text: '** ℃',
-                      color: Colors.blue,
+                    Expanded(
+                      child: _TemperatureText(
+                        text: '** ℃',
+                        color: Colors.blue,
+                      ),
                     ),
-                    _TemperatureText(
-                      text: '** ℃',
-                      color: Colors.red,
+                    Expanded(
+                      child: _TemperatureText(
+                        text: '** ℃',
+                        color: Colors.red,
+                      ),
                     ),
                   ],
                 ),
@@ -62,12 +66,10 @@ class _TemperatureText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Text(
-        _text,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
-      ),
+    return Text(
+      _text,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
     );
   }
 }
