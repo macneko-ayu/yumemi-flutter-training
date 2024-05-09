@@ -12,6 +12,7 @@ class WeatherScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Spacer(),
               AspectRatio(
                 aspectRatio: 1,
                 child: Placeholder(),
@@ -28,6 +29,16 @@ class WeatherScreen extends StatelessWidget {
                       text: '** ℃',
                       color: Colors.red,
                     ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 80,
+                    ),
+                    _Buttons(),
                   ],
                 ),
               ),
@@ -57,6 +68,32 @@ class _TemperatureText extends StatelessWidget {
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
       ),
+    );
+  }
+}
+
+class _Buttons extends StatelessWidget {
+  const _Buttons();
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonStyle = TextButton.styleFrom(
+      foregroundColor: Colors.blue,
+    );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        TextButton(
+          style: buttonStyle,
+          onPressed: () {},
+          child: const Text('Close'),
+        ),
+        TextButton(
+          style: buttonStyle,
+          onPressed: () {},
+          child: const Text('Reload'),
+        ),
+      ],
     );
   }
 }
