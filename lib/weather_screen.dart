@@ -78,19 +78,14 @@ class _Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = TextButton.styleFrom(
-      foregroundColor: Colors.blue,
-    );
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         TextButton(
-          style: buttonStyle,
           onPressed: () {},
           child: const Text('Close'),
         ),
         TextButton(
-          style: buttonStyle,
           onPressed: () {},
           child: const Text('Reload'),
         ),
