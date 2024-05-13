@@ -21,15 +21,13 @@ class WeatherScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _TemperatureText(
+                      child: _TemperatureText.min(
                         text: '** ℃',
-                        color: Colors.blue,
                       ),
                     ),
                     Expanded(
-                      child: _TemperatureText(
+                      child: _TemperatureText.max(
                         text: '** ℃',
-                        color: Colors.red,
                       ),
                     ),
                   ],
@@ -54,11 +52,21 @@ class WeatherScreen extends StatelessWidget {
 }
 
 class _TemperatureText extends StatelessWidget {
-  const _TemperatureText({
+  // const _TemperatureText({
+  //   required String text,
+  //   required Color color,
+  // })  : _text = text,
+  //       _color = color;
+
+  const _TemperatureText.max({
     required String text,
-    required Color color,
   })  : _text = text,
-        _color = color;
+        _color = Colors.red;
+
+  const _TemperatureText.min({
+    required String text,
+  })  : _text = text,
+        _color = Colors.blue;
 
   final String _text;
   final Color _color;
