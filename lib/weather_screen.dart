@@ -10,7 +10,6 @@ class WeatherScreen extends StatelessWidget {
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Spacer(),
               AspectRatio(
