@@ -52,12 +52,6 @@ class WeatherScreen extends StatelessWidget {
 }
 
 class _TemperatureText extends StatelessWidget {
-  // const _TemperatureText({
-  //   required String text,
-  //   required Color color,
-  // })  : _text = text,
-  //       _color = color;
-
   const _TemperatureText.max({
     required String text,
   })  : _text = text,
