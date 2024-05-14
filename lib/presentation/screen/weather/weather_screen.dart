@@ -3,9 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -65,8 +70,8 @@ class _WeatherImage extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1,
       child: _weatherCondition == null
-      ? const Placeholder() 
-      : _convert(_weatherCondition),
+          ? const Placeholder()
+          : _convert(_weatherCondition),
     );
   }
 
