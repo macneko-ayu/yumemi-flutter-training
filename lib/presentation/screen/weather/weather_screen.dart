@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/data/weather_condition.dart';
+import 'package:flutter_training/gen/assets.gen.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -48,6 +51,31 @@ class WeatherScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _WeatherImage extends StatelessWidget {
+  const _WeatherImage(WeatherCondition? weatherCondition)
+      : _weatherCondition = weatherCondition;
+
+  final WeatherCondition? _weatherCondition;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: _weatherCondition == null
+      ? const Placeholder() 
+      : _convert(_weatherCondition),
+    );
+  }
+
+  SvgPicture _convert(WeatherCondition weatherCondition) {
+    return switch (weatherCondition) {
+      WeatherCondition.sunny => Assets.sunny.svg(),
+      WeatherCondition.cloudy => Assets.cloudy.svg(),
+      WeatherCondition.rainy => Assets.rainy.svg(),
+    };
   }
 }
 
