@@ -2,29 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
+import 'package:flutter_training/repository/weather_repository.dart';
 
 class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({super.key});
+  WeatherScreen({super.key});
+
+  final WeatherRepository repository = WeatherRepositoryImpl();
 
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  WeatherCondition? _currentCondition;
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
             children: [
-              Spacer(),
-              AspectRatio(
-                aspectRatio: 1,
-                child: Placeholder(),
-              ),
-              Padding(
+              const Spacer(),
+              _WeatherImage(_currentCondition),
+              const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
@@ -44,10 +46,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
               Expanded(
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 80,
                     ),
-                    _Buttons(),
+                    _Buttons(reloadTapped: _fetchWeather),
                   ],
                 ),
               ),
@@ -56,6 +58,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
       ),
     );
+  }
+
+  void _fetchWeather() {
+    setState(() {
+      _currentCondition = widget.repository.fetchSimpleWeather();
+    });
   }
 }
 
@@ -71,11 +79,11 @@ class _WeatherImage extends StatelessWidget {
       aspectRatio: 1,
       child: _weatherCondition == null
           ? const Placeholder()
-          : _convert(_weatherCondition),
+          : _convertImage(_weatherCondition),
     );
   }
 
-  SvgPicture _convert(WeatherCondition weatherCondition) {
+  SvgPicture _convertImage(WeatherCondition weatherCondition) {
     return switch (weatherCondition) {
       WeatherCondition.sunny => Assets.sunny.svg(),
       WeatherCondition.cloudy => Assets.cloudy.svg(),
@@ -109,7 +117,9 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _Buttons extends StatelessWidget {
-  const _Buttons();
+  const _Buttons({required this.reloadTapped});
+
+  final VoidCallback reloadTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +131,7 @@ class _Buttons extends StatelessWidget {
           child: const Text('Close'),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: reloadTapped,
           child: const Text('Reload'),
         ),
       ],
