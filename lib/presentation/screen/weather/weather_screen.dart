@@ -127,7 +127,9 @@ class _Buttons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           child: const Text('Close'),
         ),
         TextButton(
