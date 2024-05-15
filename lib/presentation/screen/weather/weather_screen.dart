@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
@@ -11,6 +12,13 @@ class WeatherScreen extends StatefulWidget {
 
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+        .add(DiagnosticsProperty<WeatherRepository>('repository', repository));
+  }
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
@@ -136,5 +144,12 @@ class _Buttons extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+        ObjectFlagProperty<VoidCallback>.has('reloadTapped', reloadTapped),);
   }
 }
