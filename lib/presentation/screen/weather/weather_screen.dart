@@ -8,7 +8,7 @@ import 'package:flutter_training/repository/weather_repository.dart';
 class WeatherScreen extends StatefulWidget {
   WeatherScreen({super.key});
 
-  final WeatherRepository repository = WeatherRepositoryImpl();
+  final WeatherRepository repository = WeatherRepository();
 
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
