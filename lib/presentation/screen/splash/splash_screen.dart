@@ -25,9 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
-    );
+    return const ColoredBox(color: Colors.green);
   }
 
   Future<void> _transitionToWeatherScreen() async {
