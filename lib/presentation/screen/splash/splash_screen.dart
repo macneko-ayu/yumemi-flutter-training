@@ -14,10 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    Future(() async {
-      await _transitionToWeatherScreen();
-    });
+    unawaited(_transitionToWeatherScreen());
   }
 
   @override
