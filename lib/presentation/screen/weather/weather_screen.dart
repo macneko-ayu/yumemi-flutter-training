@@ -128,7 +128,7 @@ class _Buttons extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
           child: const Text('Close'),
         ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_training/presentation/screen/weather/weather_screen.dart';
 
@@ -14,12 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future(() async {
-      await WidgetsBinding.instance.endOfFrame.then((_) {
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          _transitionToWeatherScreen,
-        );
-      });
+      await _transitionToWeatherScreen();
     });
   }
 
@@ -29,13 +26,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _transitionToWeatherScreen() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: (context) {
-          return const WeatherScreen();
-        },
-      ),
-    );
+    await WidgetsBinding.instance.endOfFrame.then((_) async {
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+      final popped = await Navigator.push(
+        context,
+        MaterialPageRoute<bool>(
+          builder: (context) {
+            return const WeatherScreen();
+          },
+        ),
+      );
+      if (popped ?? false) {
+        await _transitionToWeatherScreen();
+      }
+    });
   }
 }
