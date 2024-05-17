@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/data/weather_condition.dart';
+import 'package:flutter_training/gen/assets.gen.dart';
+import 'package:flutter_training/repository/weather_repository.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
   @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  final WeatherRepository _repository = WeatherRepository();
+  WeatherCondition? _currentCondition;
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: FractionallySizedBox(
           widthFactor: 0.5,
           child: Column(
             children: [
-              Spacer(),
-              AspectRatio(
-                aspectRatio: 1,
-                child: Placeholder(),
-              ),
-              Padding(
+              const Spacer(),
+              _WeatherImage(_currentCondition),
+              const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
@@ -36,10 +45,10 @@ class WeatherScreen extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 80,
                     ),
-                    _Buttons(),
+                    _Buttons(reloadTapped: _fetchWeather),
                   ],
                 ),
               ),
@@ -48,6 +57,37 @@ class WeatherScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _fetchWeather() {
+    setState(() {
+      _currentCondition = _repository.fetchSimpleWeather();
+    });
+  }
+}
+
+class _WeatherImage extends StatelessWidget {
+  const _WeatherImage(WeatherCondition? weatherCondition)
+      : _weatherCondition = weatherCondition;
+
+  final WeatherCondition? _weatherCondition;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: _weatherCondition == null
+          ? const Placeholder()
+          : _convertImage(_weatherCondition),
+    );
+  }
+
+  SvgPicture _convertImage(WeatherCondition weatherCondition) {
+    return switch (weatherCondition) {
+      WeatherCondition.sunny => Assets.sunny.svg(),
+      WeatherCondition.cloudy => Assets.cloudy.svg(),
+      WeatherCondition.rainy => Assets.rainy.svg(),
+    };
   }
 }
 
@@ -76,7 +116,10 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _Buttons extends StatelessWidget {
-  const _Buttons();
+  const _Buttons({required VoidCallback reloadTapped})
+      : _reloadTapped = reloadTapped;
+
+  final VoidCallback _reloadTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +131,7 @@ class _Buttons extends StatelessWidget {
           child: const Text('Close'),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: _reloadTapped,
           child: const Text('Reload'),
         ),
       ],
