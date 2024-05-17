@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
@@ -117,9 +116,10 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _Buttons extends StatelessWidget {
-  const _Buttons({required this.reloadTapped});
+  const _Buttons({required VoidCallback reloadTapped})
+      : _reloadTapped = reloadTapped;
 
-  final VoidCallback reloadTapped;
+  final VoidCallback _reloadTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -131,17 +131,10 @@ class _Buttons extends StatelessWidget {
           child: const Text('Close'),
         ),
         TextButton(
-          onPressed: reloadTapped,
+          onPressed: _reloadTapped,
           child: const Text('Reload'),
         ),
       ],
     );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        ObjectFlagProperty<VoidCallback>.has('reloadTapped', reloadTapped),);
   }
 }
