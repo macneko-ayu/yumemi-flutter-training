@@ -1,15 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_training/data/weather_condition.dart';
-import 'package:flutter_training/infra/yumemi_weather_api.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 abstract class WeatherRepository {
   WeatherCondition? fetchSimpleWeather();
 }
 
 class WeatherRepositoryImpl implements WeatherRepository {
-  final _client = YumemiWeatherAPI();
+  final _client = YumemiWeather();
 
   @override
   WeatherCondition? fetchSimpleWeather() {
-    return _client.fetchSimpleWeather();
+    final response = _client.fetchSimpleWeather();
+    try {
+      return WeatherCondition.from(response);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
   }
 }
