@@ -25,6 +25,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _transitionToWeatherScreen() async {
     await WidgetsBinding.instance.endOfFrame.then((_) async {
       await Future<void>.delayed(const Duration(milliseconds: 500));
+      if (!mounted) {
+        return;
+      }
       final popped = await Navigator.push(
         context,
         MaterialPageRoute<bool>(
