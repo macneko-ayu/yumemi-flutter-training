@@ -6,22 +6,14 @@ import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
 
 class WeatherScreen extends StatefulWidget {
-  WeatherScreen({super.key});
-
-  final WeatherRepository repository = WeatherRepository();
+  const WeatherScreen({super.key});
 
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty<WeatherRepository>('repository', repository));
-  }
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  final WeatherRepository _repository = WeatherRepository();
   WeatherCondition? _currentCondition;
 
   @override
@@ -70,7 +62,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   void _fetchWeather() {
     setState(() {
-      _currentCondition = widget.repository.fetchSimpleWeather();
+      _currentCondition = _repository.fetchSimpleWeather();
     });
   }
 }
