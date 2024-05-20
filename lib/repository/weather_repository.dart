@@ -16,4 +16,21 @@ class WeatherRepository {
       return null;
     }
   }
+
+  WeatherCondition? fetchThrowsWeather(String area) {
+    try {
+      final response = _client.fetchThrowsWeather(area);
+      return WeatherCondition.from(response);
+    } on YumemiWeatherError catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+      rethrow;
+    } on Exception catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+      return null;
+    }
+  }
 }
