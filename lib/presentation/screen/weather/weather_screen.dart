@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
@@ -61,14 +60,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  void _fetchWeather() {
+  Future<void> _fetchWeather() async {
     WeatherCondition? condition;
     try {
       condition = _repository.fetchThrowsWeather('tokyo');
-    } on YumemiWeatherError catch (e) {
-      // TODO: ダイアログを表示してエラーメッセージを表示する
-      if (kDebugMode) {
-        debugPrint(e.toString());
+    } on YumemiWeatherError catch (error) {
+      switch (error) {
+        case YumemiWeatherError.invalidParameter:
+          await _showErrorDialog('不正なパラメータによるエラーが発生しました');
+        case YumemiWeatherError.unknown:
+          await _showErrorDialog('不明なエラーが発生しました');
       }
     } finally {
       if (condition != null) {
