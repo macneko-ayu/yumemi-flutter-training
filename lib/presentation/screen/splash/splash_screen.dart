@@ -28,17 +28,15 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) {
         return;
       }
-      final popped = await Navigator.push(
+      await Navigator.push(
         context,
-        MaterialPageRoute<bool>(
+        MaterialPageRoute<void>(
           builder: (context) {
             return const WeatherScreen();
           },
         ),
       );
-      if (popped ?? false) {
-        await _transitionToWeatherScreen();
-      }
+      await _transitionToWeatherScreen();
     });
   }
 }
