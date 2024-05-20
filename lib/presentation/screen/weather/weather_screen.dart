@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -60,9 +62,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _fetchWeather() {
-    setState(() {
-      _currentCondition = _repository.fetchSimpleWeather();
-    });
+    WeatherCondition? condition;
+    try {
+      condition = _repository.fetchThrowsWeather('tokyo');
+    } on YumemiWeatherError catch (e) {
+      // TODO: ダイアログを表示してエラーメッセージを表示する
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+    } finally {
+      if (condition != null) {
+        setState(() {
+          _currentCondition = condition;
+        });
+      }
+    }
   }
 }
 
