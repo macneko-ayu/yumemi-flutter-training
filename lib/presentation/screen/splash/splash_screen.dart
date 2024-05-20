@@ -11,20 +11,22 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with AfterLayoutMixin {
-  @override
-  void initState() {
-    super.initState();
-    unawaited(executeAfterLayout(_transitionToWeatherScreen));
-  }
-
+class _SplashScreenState extends State<SplashScreen> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     return const ColoredBox(color: Colors.green);
   }
 
+  @override
+  void didAfterLayout() {
+    unawaited(_transitionToWeatherScreen());
+  }
+
   Future<void> _transitionToWeatherScreen() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (!mounted) {
+      return;
+    }
     await Navigator.push(
       context,
       MaterialPageRoute<void>(
@@ -33,6 +35,6 @@ class _SplashScreenState extends State<SplashScreen>
         },
       ),
     );
-    await executeAfterLayout(_transitionToWeatherScreen);
+    await _transitionToWeatherScreen();
   }
 }
