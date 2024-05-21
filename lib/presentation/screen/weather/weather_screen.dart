@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather_condition.dart';
+import 'package:flutter_training/data/weather_info.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
 
@@ -14,7 +16,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository();
-  WeatherCondition? _currentCondition;
+  WeatherInfo? _info;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_currentCondition),
+              _WeatherImage(_info?.weatherCondition),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
@@ -62,9 +64,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Future<void> _fetchWeather() async {
     try {
-      final condition = _repository.fetchThrowsWeather('tokyo');
+      final info = _repository.fetchWeather('tokyo', DateTime.now());
+      // TODO: レスポンスが変換できているか確認するための仮処理
+      if (kDebugMode) {
+        debugPrint(info.maxTemperature.toString());
+      }
       setState(() {
-        _currentCondition = condition;
+        _info = info;
       });
     } on AppException catch (e) {
       await _showErrorDialog(e.message);
