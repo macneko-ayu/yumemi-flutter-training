@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
@@ -59,10 +60,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  void _fetchWeather() {
-    setState(() {
-      _currentCondition = _repository.fetchSimpleWeather();
-    });
+  Future<void> _fetchWeather() async {
+    try {
+      final condition = _repository.fetchThrowsWeather('tokyo');
+      setState(() {
+        _currentCondition = condition;
+      });
+    } on AppException catch (e) {
+      await _showErrorDialog(e.message);
+    }
+  }
+
+  Future<void> _showErrorDialog(String message) async {
+    if (!mounted) {
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
