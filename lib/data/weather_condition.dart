@@ -1,3 +1,5 @@
+import 'package:flutter_training/data/app_exception.dart';
+
 enum WeatherCondition {
   sunny,
   cloudy,
@@ -6,7 +8,7 @@ enum WeatherCondition {
   factory WeatherCondition.from(String name) {
     return values.singleWhere(
       (element) => element.name == name,
-      orElse: () => throw Exception('$name is unexpected value.'),
+      orElse: () => throw const UndefinedWeatherException(),
     );
   }
 }

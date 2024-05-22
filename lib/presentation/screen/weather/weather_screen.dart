@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -64,13 +64,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
     WeatherCondition? condition;
     try {
       condition = _repository.fetchThrowsWeather('tokyo');
-    } on YumemiWeatherError catch (error) {
-      switch (error) {
-        case YumemiWeatherError.invalidParameter:
-          await _showErrorDialog('不正なパラメータによるエラーが発生しました');
-        case YumemiWeatherError.unknown:
-          await _showErrorDialog('不明なエラーが発生しました');
-      }
+    } on UndefinedWeatherException catch (e) {
+      await _showErrorDialog(e.message);
+    } on InvalidParameterException catch (e) {
+      await _showErrorDialog(e.message);
+    } on UnknownException catch (e) {
+      await _showErrorDialog(e.message);
     } finally {
       if (condition != null) {
         setState(() {
