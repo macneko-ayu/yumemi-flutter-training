@@ -66,11 +66,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       setState(() {
         _currentCondition = condition;
       });
-    } on UndefinedWeatherException catch (e) {
-      await _showErrorDialog(e.message);
-    } on InvalidParameterException catch (e) {
-      await _showErrorDialog(e.message);
-    } on UnknownException catch (e) {
+    } on AppException catch (e) {
       await _showErrorDialog(e.message);
     }
   }
