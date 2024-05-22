@@ -1,4 +1,4 @@
-class AppException implements Exception {
+sealed class AppException implements Exception {
   const AppException({required this.message});
 
   final String message;
@@ -9,7 +9,7 @@ class UndefinedWeatherException extends AppException {
       : super(message: '想定していない天気情報を取得しました。時間を置いて再度お試しください。');
 }
 
-class WeatherAPIException extends AppException {
+sealed class WeatherAPIException extends AppException {
   const WeatherAPIException({required super.message});
 }
 
