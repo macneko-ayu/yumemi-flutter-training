@@ -76,6 +76,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> _showErrorDialog(String message) async {
+    if (!mounted) {
+      return;
+    }
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
