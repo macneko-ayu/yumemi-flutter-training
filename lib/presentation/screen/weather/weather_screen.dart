@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
@@ -28,18 +27,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
             children: [
               const Spacer(),
               _WeatherImage(_info?.weatherCondition),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        text: '** ℃',
+                        temperature: _info?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        text: '** ℃',
+                        temperature: _info?.maxTemperature,
                       ),
                     ),
                   ],
@@ -65,10 +64,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Future<void> _fetchWeather() async {
     try {
       final info = _repository.fetchWeather('tokyo', DateTime.now());
-      // TODO: レスポンスが変換できているか確認するための仮処理
-      if (kDebugMode) {
-        debugPrint(info.maxTemperature.toString());
-      }
       setState(() {
         _info = info;
       });
@@ -127,22 +122,22 @@ class _WeatherImage extends StatelessWidget {
 
 class _TemperatureText extends StatelessWidget {
   const _TemperatureText.max({
-    required String text,
-  })  : _text = text,
+    required int? temperature,
+  })  : _temperature = temperature,
         _color = Colors.red;
 
   const _TemperatureText.min({
-    required String text,
-  })  : _text = text,
+    required int? temperature,
+  })  : _temperature = temperature,
         _color = Colors.blue;
 
-  final String _text;
+  final int? _temperature;
   final Color _color;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      _text,
+      '${_temperature?.toString() ?? '**'} ℃',
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
     );
