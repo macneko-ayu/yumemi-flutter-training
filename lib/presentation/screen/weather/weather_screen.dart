@@ -61,21 +61,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> _fetchWeather() async {
-    WeatherCondition? condition;
     try {
-      condition = _repository.fetchThrowsWeather('tokyo');
+      final condition = _repository.fetchThrowsWeather('tokyo');
+      setState(() {
+        _currentCondition = condition;
+      });
     } on UndefinedWeatherException catch (e) {
       await _showErrorDialog(e.message);
     } on InvalidParameterException catch (e) {
       await _showErrorDialog(e.message);
     } on UnknownException catch (e) {
       await _showErrorDialog(e.message);
-    } finally {
-      if (condition != null) {
-        setState(() {
-          _currentCondition = condition;
-        });
-      }
     }
   }
 
