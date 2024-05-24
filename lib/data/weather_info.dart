@@ -16,7 +16,7 @@ class WeatherInfo {
             WeatherCondition.from(json['weather_condition'].toString()),
         maxTemperature: int.parse(json['max_temperature'].toString()),
         minTemperature: int.parse(json['min_temperature'].toString()),
-        date: json['date'].toString(),
+        date: DateTime.parse(json['date'].toString()),
       );
     } on UndefinedWeatherException {
       rethrow;
@@ -28,5 +28,5 @@ class WeatherInfo {
   WeatherCondition? weatherCondition;
   int maxTemperature;
   int minTemperature;
-  String date;
+  DateTime date;
 }
