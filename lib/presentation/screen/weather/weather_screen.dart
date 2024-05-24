@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
+import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
-import 'package:flutter_training/data/weather_info.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
 
@@ -15,7 +15,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository();
-  WeatherInfo? _info;
+  Weather? _weather;
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +26,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_info?.weatherCondition),
+              _WeatherImage(_weather?.weatherCondition),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        temperature: _info?.minTemperature,
+                        temperature: _weather?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        temperature: _info?.maxTemperature,
+                        temperature: _weather?.maxTemperature,
                       ),
                     ),
                   ],
@@ -65,7 +65,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     try {
       final info = _repository.fetchWeather('tokyo', DateTime.now());
       setState(() {
-        _info = info;
+        _weather = info;
       });
     } on AppException catch (e) {
       await _showErrorDialog(e.message);

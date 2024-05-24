@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_training/data/app_exception.dart';
+import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
-import 'package:flutter_training/data/weather_info.dart';
 import 'package:flutter_training/data/weather_request.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
@@ -34,13 +34,13 @@ class WeatherRepository {
     }
   }
 
-  WeatherInfo fetchWeather(String area, DateTime date) {
+  Weather fetchWeather(String area, DateTime date) {
     final request =
         WeatherRequest(area: area, date: date.toUtc().toIso8601String())
             .toJson();
     try {
       final response = _client.fetchWeather(jsonEncode(request));
-      return WeatherInfo.fromJson(jsonDecode(response) as Map<String, dynamic>);
+      return Weather.fromJson(jsonDecode(response) as Map<String, dynamic>);
     } on YumemiWeatherError catch (e) {
       switch (e) {
         case YumemiWeatherError.invalidParameter:
