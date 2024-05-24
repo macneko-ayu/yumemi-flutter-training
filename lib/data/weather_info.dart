@@ -1,3 +1,4 @@
+import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 
 class WeatherInfo {
@@ -8,13 +9,21 @@ class WeatherInfo {
     required this.date,
   });
 
-  factory WeatherInfo.fromJson(Map<String, dynamic> json) => WeatherInfo(
+  factory WeatherInfo.fromJson(Map<String, dynamic> json) {
+    try {
+      return WeatherInfo(
         weatherCondition:
-            WeatherCondition.from(json['weather_condition'] as String),
-        maxTemperature: json['max_temperature'] as int,
-        minTemperature: json['min_temperature'] as int,
-        date: json['date'] as String,
+            WeatherCondition.from(json['weather_condition'].toString()),
+        maxTemperature: int.parse(json['max_temperature'].toString()),
+        minTemperature: int.parse(json['min_temperature'].toString()),
+        date: json['date'].toString(),
       );
+    } on UndefinedWeatherException {
+      rethrow;
+    } on FormatException {
+      throw const ResponseFormatException();
+    }
+  }
 
   WeatherCondition? weatherCondition;
   int maxTemperature;
