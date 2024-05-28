@@ -11,6 +11,6 @@ class WeatherRequest {
     };
   }
 
-  String area;
-  String date;
+  final String area;
+  final String date;
 }

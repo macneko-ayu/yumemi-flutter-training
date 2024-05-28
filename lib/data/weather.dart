@@ -26,7 +26,7 @@ class Weather {
   }
 
   WeatherCondition? weatherCondition;
-  int maxTemperature;
-  int minTemperature;
-  DateTime date;
+  final int maxTemperature;
+  final int minTemperature;
+  final DateTime date;
 }
