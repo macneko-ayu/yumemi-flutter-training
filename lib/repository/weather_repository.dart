@@ -50,6 +50,8 @@ class WeatherRepository {
       }
     } on UndefinedWeatherException {
       rethrow;
+    } on ResponseFormatException {
+      rethrow;
     }
   }
 }
