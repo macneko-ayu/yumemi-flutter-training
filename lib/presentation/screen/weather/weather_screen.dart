@@ -15,7 +15,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository();
-  Weather? _weather;
+  Weather? _currentWeather;
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +26,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_weather?.weatherCondition),
+              _WeatherImage(_currentWeather?.weatherCondition),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        temperature: _weather?.minTemperature,
+                        temperature: _currentWeather?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        temperature: _weather?.maxTemperature,
+                        temperature: _currentWeather?.maxTemperature,
                       ),
                     ),
                   ],
@@ -63,9 +63,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Future<void> _fetchWeather() async {
     try {
-      final info = _repository.fetchWeather('tokyo', DateTime.now());
+      final weather = _repository.fetchWeather('tokyo', DateTime.now());
       setState(() {
-        _weather = info;
+        _currentWeather = weather;
       });
     } on AppException catch (e) {
       await _showErrorDialog(e.message);
