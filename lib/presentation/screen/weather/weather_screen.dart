@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
+import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
@@ -14,7 +15,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherRepository _repository = WeatherRepository();
-  WeatherCondition? _currentCondition;
+  Weather? _currentWeather;
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +26,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_currentCondition),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              _WeatherImage(_currentWeather?.weatherCondition),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        text: '** ℃',
+                        temperature: _currentWeather?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        text: '** ℃',
+                        temperature: _currentWeather?.maxTemperature,
                       ),
                     ),
                   ],
@@ -62,9 +63,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Future<void> _fetchWeather() async {
     try {
-      final condition = _repository.fetchThrowsWeather('tokyo');
+      final weather = _repository.fetchWeather('tokyo', DateTime.now());
       setState(() {
-        _currentCondition = condition;
+        _currentWeather = weather;
       });
     } on AppException catch (e) {
       await _showErrorDialog(e.message);
@@ -121,22 +122,22 @@ class _WeatherImage extends StatelessWidget {
 
 class _TemperatureText extends StatelessWidget {
   const _TemperatureText.max({
-    required String text,
-  })  : _text = text,
+    required int? temperature,
+  })  : _temperature = temperature,
         _color = Colors.red;
 
   const _TemperatureText.min({
-    required String text,
-  })  : _text = text,
+    required int? temperature,
+  })  : _temperature = temperature,
         _color = Colors.blue;
 
-  final String _text;
+  final int? _temperature;
   final Color _color;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      _text,
+      '${_temperature?.toString() ?? '**'} ℃',
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _color),
     );
