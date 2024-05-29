@@ -5,10 +5,14 @@ targets:
         options:
           build_extensions:
             '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.g.dart'
+          ignore_for_file:
+            - type=lint
       freezed:
         options:
           build_extensions:
             '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.freezed.dart'
+          ignore_for_file:
+            - type=lint
       json_serializable:
         options:
           checked: true
