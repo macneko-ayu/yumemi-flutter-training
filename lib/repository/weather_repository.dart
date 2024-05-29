@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/data/weather_request.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherRepository {
@@ -48,10 +50,12 @@ class WeatherRepository {
         case YumemiWeatherError.unknown:
           throw const UnknownException();
       }
-    } on UndefinedWeatherException {
-      rethrow;
-    } on ResponseFormatException {
-      rethrow;
+    } on CheckedFromJsonException catch (e) {
+      if (kDebugMode) {
+        // Exceptionの要因となった箇所をデバッグ用に出力する
+        debugPrint(e.toString());
+      }
+      throw const ResponseFormatException();
     }
   }
 }
