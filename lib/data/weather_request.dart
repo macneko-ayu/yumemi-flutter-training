@@ -1,16 +1,14 @@
-class WeatherRequest {
-  WeatherRequest({
-    required this.area,
-    required this.date,
-  });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'area': area,
-      'date': date,
-    };
-  }
+import 'package:flutter_training/data/date_time_converter.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String area;
-  final String date;
+part 'weather_request.freezed.dart';
+part 'weather_request.g.dart';
+
+@Freezed(toJson: true, fromJson: false)
+class WeatherRequest with _$WeatherRequest {
+  factory WeatherRequest({
+    required String area,
+    @DateTimeConverter() required DateTime date,
+  }) = _WeatherRequest;
 }

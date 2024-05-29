@@ -38,7 +38,7 @@ class WeatherRepository {
 
   Weather fetchWeather(String area, DateTime date) {
     final request =
-        WeatherRequest(area: area, date: date.toUtc().toIso8601String())
+        WeatherRequest(area: area, date: date)
             .toJson();
     try {
       final response = _client.fetchWeather(jsonEncode(request));
