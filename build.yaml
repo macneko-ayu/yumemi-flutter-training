@@ -1,6 +1,14 @@
 targets:
   $default:
     builders:
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.g.dart'
+      freezed:
+        options:
+          build_extensions:
+            '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.freezed.dart'
       json_serializable:
         options:
           checked: true

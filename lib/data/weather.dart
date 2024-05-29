@@ -2,8 +2,8 @@ import 'package:flutter_training/data/date_time_converter.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'weather.freezed.dart';
-part 'weather.g.dart';
+part 'generated/weather.freezed.dart';
+part 'generated/weather.g.dart';
 
 @freezed
 class Weather with _$Weather {
