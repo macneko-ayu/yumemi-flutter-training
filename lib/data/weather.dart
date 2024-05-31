@@ -1,32 +1,19 @@
-import 'package:flutter_training/data/app_exception.dart';
+import 'package:flutter_training/data/date_time_converter.dart';
 import 'package:flutter_training/data/weather_condition.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Weather {
-  Weather({
-    required this.weatherCondition,
-    required this.maxTemperature,
-    required this.minTemperature,
-    required this.date,
-  });
+part 'generated/weather.freezed.dart';
+part 'generated/weather.g.dart';
 
-  factory Weather.fromJson(Map<String, dynamic> json) {
-    try {
-      return Weather(
-        weatherCondition:
-            WeatherCondition.from(json['weather_condition'].toString()),
-        maxTemperature: int.parse(json['max_temperature'].toString()),
-        minTemperature: int.parse(json['min_temperature'].toString()),
-        date: DateTime.parse(json['date'].toString()),
-      );
-    } on UndefinedWeatherException {
-      rethrow;
-    } on FormatException {
-      throw const ResponseFormatException();
-    }
-  }
+@freezed
+class Weather with _$Weather {
+  const factory Weather({
+    required WeatherCondition weatherCondition,
+    required int maxTemperature,
+    required int minTemperature,
+    @DateTimeConverter() required DateTime date,
+  }) = _Weather;
 
-  WeatherCondition weatherCondition;
-  final int maxTemperature;
-  final int minTemperature;
-  final DateTime date;
+  factory Weather.fromJson(Map<String, dynamic> json) =>
+      _$WeatherFromJson(json);
 }
