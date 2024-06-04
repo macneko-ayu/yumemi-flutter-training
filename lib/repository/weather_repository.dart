@@ -6,7 +6,15 @@ import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/data/weather_request.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
+
+part 'generated/weather_repository.g.dart';
+
+@riverpod
+WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
+  return WeatherRepository();
+}
 
 class WeatherRepository {
   final _client = YumemiWeather();
