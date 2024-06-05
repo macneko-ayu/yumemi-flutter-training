@@ -61,7 +61,10 @@ class WeatherScreen extends ConsumerWidget {
                     const SizedBox(
                       height: 80,
                     ),
-                    _Buttons(reloadTapped: () => _fetchWeather(context, ref)),
+                    _Buttons(
+                      closeTapped: () => Navigator.of(context).pop(),
+                      reloadTapped: () => _fetchWeather(context, ref),
+                    ),
                   ],
                 ),
               ),
@@ -152,9 +155,13 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _Buttons extends StatelessWidget {
-  const _Buttons({required VoidCallback reloadTapped})
-      : _reloadTapped = reloadTapped;
+  const _Buttons({
+    required VoidCallback closeTapped,
+    required VoidCallback reloadTapped,
+  })  : _closeTapped = closeTapped,
+        _reloadTapped = reloadTapped;
 
+  final VoidCallback _closeTapped;
   final VoidCallback _reloadTapped;
 
   @override
@@ -163,9 +170,7 @@ class _Buttons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: _closeTapped,
           child: const Text('Close'),
         ),
         TextButton(
