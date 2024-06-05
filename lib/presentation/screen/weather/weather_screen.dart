@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather.dart';
@@ -21,19 +24,12 @@ class WeatherNotifier extends _$WeatherNotifier {
   }
 }
 
-class WeatherScreen extends StatefulWidget {
+class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
   @override
-  State<WeatherScreen> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  final WeatherRepository _repository = WeatherRepository();
-  Weather? _currentWeather;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentWeather = ref.watch(weatherNotifierProvider);
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -41,19 +37,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_currentWeather?.weatherCondition),
+              _WeatherImage(currentWeather?.weatherCondition),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        temperature: _currentWeather?.minTemperature,
+                        temperature: currentWeather?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        temperature: _currentWeather?.maxTemperature,
+                        temperature: currentWeather?.maxTemperature,
                       ),
                     ),
                   ],
@@ -65,7 +61,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     const SizedBox(
                       height: 80,
                     ),
-                    _Buttons(reloadTapped: _fetchWeather),
+                    _Buttons(reloadTapped: () => _fetchWeather(context, ref)),
                   ],
                 ),
               ),
@@ -76,21 +72,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  Future<void> _fetchWeather() async {
+  void _fetchWeather(BuildContext context, WidgetRef ref) {
     try {
-      final weather = _repository.fetchWeather('tokyo', DateTime.now());
-      setState(() {
-        _currentWeather = weather;
-      });
+      ref
+          .read(weatherNotifierProvider.notifier)
+          .fetchWeather('tokyo', DateTime.now());
     } on AppException catch (e) {
-      await _showErrorDialog(e.message);
+      unawaited(_showErrorDialog(context, e.message));
     }
   }
 
-  Future<void> _showErrorDialog(String message) async {
-    if (!mounted) {
-      return;
-    }
+  Future<void> _showErrorDialog(BuildContext context, String message) async {
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
