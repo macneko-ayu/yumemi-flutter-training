@@ -17,9 +17,10 @@ class WeatherNotifier extends _$WeatherNotifier {
   @override
   Weather? build() => null;
 
-  void fetchWeather(String area, DateTime date) {
-    final weather =
-        ref.read(weatherRepositoryProvider).fetchWeather(area, date);
+  void fetchWeather({required String area, required DateTime date}) {
+    final weather = ref
+        .read(weatherRepositoryProvider)
+        .fetchWeather(area: area, date: date);
     state = weather;
   }
 }
@@ -37,7 +38,7 @@ class WeatherScreen extends ConsumerWidget {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(currentWeather?.weatherCondition),
+              _WeatherImage(weatherCondition: currentWeather?.weatherCondition),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
@@ -79,7 +80,7 @@ class WeatherScreen extends ConsumerWidget {
     try {
       ref
           .read(weatherNotifierProvider.notifier)
-          .fetchWeather('tokyo', DateTime.now());
+          .fetchWeather(area: 'tokyo', date: DateTime.now());
     } on AppException catch (e) {
       unawaited(_showErrorDialog(context, e.message));
     }
@@ -106,7 +107,7 @@ class WeatherScreen extends ConsumerWidget {
 }
 
 class _WeatherImage extends StatelessWidget {
-  const _WeatherImage(WeatherCondition? weatherCondition)
+  const _WeatherImage({required WeatherCondition? weatherCondition})
       : _weatherCondition = weatherCondition;
 
   final WeatherCondition? _weatherCondition;
@@ -117,11 +118,11 @@ class _WeatherImage extends StatelessWidget {
       aspectRatio: 1,
       child: _weatherCondition == null
           ? const Placeholder()
-          : _convertImage(_weatherCondition),
+          : _convertImage(weatherCondition: _weatherCondition),
     );
   }
 
-  SvgPicture _convertImage(WeatherCondition weatherCondition) {
+  SvgPicture _convertImage({required WeatherCondition weatherCondition}) {
     return switch (weatherCondition) {
       WeatherCondition.sunny => Assets.sunny.svg(),
       WeatherCondition.cloudy => Assets.cloudy.svg(),

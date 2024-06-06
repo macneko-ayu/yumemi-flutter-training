@@ -25,7 +25,7 @@ class WeatherRepository {
   const WeatherRepository({required YumemiWeather client}) : _client = client;
   final YumemiWeather _client;
 
-  Weather fetchWeather(String area, DateTime date) {
+  Weather fetchWeather({required String area, required DateTime date}) {
     final request =
         WeatherRequest(area: area, date: date)
             .toJson();
