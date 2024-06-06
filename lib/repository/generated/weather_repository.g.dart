@@ -8,7 +8,22 @@ part of '../weather_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$weatherRepositoryHash() => r'e406ca4f389bfe48dbf297ee8184e61b75f07f88';
+String _$yumemiWeatherHash() => r'515a793e298c33081c689160894117869078e849';
+
+/// See also [yumemiWeather].
+@ProviderFor(yumemiWeather)
+final yumemiWeatherProvider = AutoDisposeProvider<YumemiWeather>.internal(
+  yumemiWeather,
+  name: r'yumemiWeatherProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$yumemiWeatherHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef YumemiWeatherRef = AutoDisposeProviderRef<YumemiWeather>;
+String _$weatherRepositoryHash() => r'322890880b2ad93063da4b8c238eb14cde73d33d';
 
 /// See also [weatherRepository].
 @ProviderFor(weatherRepository)

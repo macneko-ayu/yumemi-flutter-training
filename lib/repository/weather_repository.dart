@@ -11,12 +11,19 @@ import 'package:yumemi_weather/yumemi_weather.dart';
 part 'generated/weather_repository.g.dart';
 
 @riverpod
+YumemiWeather yumemiWeather(YumemiWeatherRef ref) {
+  return YumemiWeather();
+}
+
+@riverpod
 WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
-  return WeatherRepository();
+  final client = ref.read(yumemiWeatherProvider);
+  return WeatherRepository(client: client);
 }
 
 class WeatherRepository {
-  final _client = YumemiWeather();
+  const WeatherRepository({required YumemiWeather client}) : _client = client;
+  final YumemiWeather _client;
 
   Weather fetchWeather(String area, DateTime date) {
     final request =
