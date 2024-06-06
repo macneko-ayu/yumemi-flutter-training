@@ -8,7 +8,7 @@ part of '../weather_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$weatherNotifierHash() => r'88124fc7e34860351489b64d34c48b18d0bc883b';
+String _$weatherNotifierHash() => r'b054659643c7cc6b3dcd5ae09fb6a767824093dd';
 
 /// See also [WeatherNotifier].
 @ProviderFor(WeatherNotifier)

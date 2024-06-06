@@ -4,16 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_request.dart';
+import 'package:flutter_training/infra/yumemi_weather_provider.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 part 'generated/weather_repository.g.dart';
-
-@riverpod
-YumemiWeather yumemiWeather(YumemiWeatherRef ref) {
-  return YumemiWeather();
-}
 
 @riverpod
 WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
