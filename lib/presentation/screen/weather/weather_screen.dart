@@ -4,26 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
-import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
-import 'package:flutter_training/repository/weather_repository.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'generated/weather_screen.g.dart';
-
-@riverpod
-class WeatherNotifier extends _$WeatherNotifier {
-  @override
-  Weather? build() => null;
-
-  void fetchWeather({required String area, required DateTime date}) {
-    final weather = ref
-        .read(weatherRepositoryProvider)
-        .fetchWeather(area: area, date: date);
-    state = weather;
-  }
-}
+import 'package:flutter_training/presentation/screen/weather/weather_notifier.dart';
 
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
