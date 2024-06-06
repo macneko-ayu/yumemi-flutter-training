@@ -39,10 +39,12 @@ flowchart TB
     Provider[[provider]];
   end
 
+  RepositoryProvider[["RepositoryProvider"]];
+  APIClientProvider[["APIClientProvider"]];
   NotifierProvider[["NotifierProvider"]];
-  Screen((Screen));
+  Screen((WeatherScreen));
 
   NotifierProvider ==> Screen;
   NotifierProvider -.-> Screen;
-  Repository -.-> NotifierProvider;
+  APIClientProvider -.-> RepositoryProvider;
 ```
