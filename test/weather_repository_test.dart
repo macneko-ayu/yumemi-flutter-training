@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/infra/yumemi_weather_provider.dart';
@@ -123,6 +124,87 @@ void main() {
         verify(mockYumemiWeather.fetchWeather(any)).called(1);
         expect(actual, expectWeather);
       });
+    });
+  });
+
+  group('想定しないレスポンスが返却された場合', () {
+    test('WeatherCondition で定義されていない天気が返却された場合、ResponseFormatException が発生すること',
+        () {
+      // dummy response
+      const resultJson = '''
+            {
+              "weather_condition": "dummy",
+              "max_temperature": 33,
+              "min_temperature": 11,
+              "date": "2024-06-01T00:00:00+09:00"
+            }
+          ''';
+
+      // stub
+      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+
+      // expect value
+      final expectException = throwsA(isA<ResponseFormatException>());
+
+      // assert
+      expect(
+        () => providerContainer
+            .read(weatherRepositoryProvider)
+            .fetchWeather(area: area, date: date),
+        expectException,
+      );
+    });
+
+    test('返却された気温が num 型ではなかった場合、ResponseFormatException が発生すること', () {
+      // dummy response
+      const resultJson = '''
+            {
+              "weather_condition": "sunny",
+              "max_temperature": "33",
+              "min_temperature": 11,
+              "date": "2024-06-01T00:00:00+09:00"
+            }
+          ''';
+
+      // stub
+      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+
+      // expect value
+      final expectException = throwsA(isA<ResponseFormatException>());
+
+      // assert
+      expect(
+        () => providerContainer
+            .read(weatherRepositoryProvider)
+            .fetchWeather(area: area, date: date),
+        expectException,
+      );
+    });
+
+    test('返却された日付形式が想定した形式ではなかった場合、ResponseFormatException が発生すること', () {
+      // dummy response
+      const resultJson = '''
+            {
+              "weather_condition": "sunny",
+              "max_temperature": 33,
+              "min_temperature": 11,
+              "date": "2024/06/01"
+            }
+          ''';
+
+      // stub
+      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+
+      // expect value
+      final expectException = throwsA(isA<ResponseFormatException>());
+
+      // assert
+      expect(
+        () => providerContainer
+            .read(weatherRepositoryProvider)
+            .fetchWeather(area: area, date: date),
+        expectException,
+      );
     });
   });
 }
