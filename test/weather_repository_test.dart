@@ -27,8 +27,6 @@ void main() {
     reset(mockYumemiWeather);
   });
 
-  // tearDown(providerContainer.dispose);
-
   group('レスポンスに関するテスト群', () {
     group('正常なレスポンスが返却された場合', () {
       test('適切な Weather かつ WeatherCondition.sunny に変換されること', () {
