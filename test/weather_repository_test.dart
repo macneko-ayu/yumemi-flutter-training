@@ -9,22 +9,24 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
+import 'test_utils.dart';
 import 'weather_repository_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<YumemiWeather>()])
 void main() {
   final mockYumemiWeather = MockYumemiWeather();
-  final providerContainer = ProviderContainer(
-    overrides: [
-      yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
-    ],
-  );
+  late ProviderContainer providerContainer;
 
   const area = 'tokyo';
   final date = DateTime(2024, 6);
 
   setUp(() {
     reset(mockYumemiWeather);
+    providerContainer = createContainer(
+      overrides: [
+        yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
+      ],
+    );
   });
 
   group('レスポンスに関するテスト群', () {
@@ -125,9 +127,10 @@ void main() {
     });
 
     group('想定しないレスポンスが返却された場合', () {
-      test(
-          'WeatherCondition で定義されていない天気が返却された場合、ResponseFormatException が発生すること',
-          () {
+      test('''
+        WeatherCondition で定義されていない天気が返却された場合、
+        ResponseFormatException が発生すること
+        ''', () {
         // dummy response
         const resultJson = '''
             {
