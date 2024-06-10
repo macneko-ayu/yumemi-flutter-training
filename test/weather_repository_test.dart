@@ -123,13 +123,13 @@ void main() {
         expect(actual, expectWeather);
       });
     });
-  });
 
-  group('想定しないレスポンスが返却された場合', () {
-    test('WeatherCondition で定義されていない天気が返却された場合、ResponseFormatException が発生すること',
-        () {
-      // dummy response
-      const resultJson = '''
+    group('想定しないレスポンスが返却された場合', () {
+      test(
+          'WeatherCondition で定義されていない天気が返却された場合、ResponseFormatException が発生すること',
+          () {
+        // dummy response
+        const resultJson = '''
             {
               "weather_condition": "dummy",
               "max_temperature": 33,
@@ -138,24 +138,24 @@ void main() {
             }
           ''';
 
-      // stub
-      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        // stub
+        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
 
-      // expect value
-      final expectException = throwsA(isA<ResponseFormatException>());
+        // expect value
+        final expectException = throwsA(isA<ResponseFormatException>());
 
-      // assert
-      expect(
-        () => providerContainer
-            .read(weatherRepositoryProvider)
-            .fetchWeather(area: area, date: date),
-        expectException,
-      );
-    });
+        // assert
+        expect(
+          () => providerContainer
+              .read(weatherRepositoryProvider)
+              .fetchWeather(area: area, date: date),
+          expectException,
+        );
+      });
 
-    test('返却された気温が num 型ではなかった場合、ResponseFormatException が発生すること', () {
-      // dummy response
-      const resultJson = '''
+      test('返却された気温が num 型ではなかった場合、ResponseFormatException が発生すること', () {
+        // dummy response
+        const resultJson = '''
             {
               "weather_condition": "sunny",
               "max_temperature": "33",
@@ -164,24 +164,24 @@ void main() {
             }
           ''';
 
-      // stub
-      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        // stub
+        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
 
-      // expect value
-      final expectException = throwsA(isA<ResponseFormatException>());
+        // expect value
+        final expectException = throwsA(isA<ResponseFormatException>());
 
-      // assert
-      expect(
-        () => providerContainer
-            .read(weatherRepositoryProvider)
-            .fetchWeather(area: area, date: date),
-        expectException,
-      );
-    });
+        // assert
+        expect(
+          () => providerContainer
+              .read(weatherRepositoryProvider)
+              .fetchWeather(area: area, date: date),
+          expectException,
+        );
+      });
 
-    test('返却された日付形式が想定した形式ではなかった場合、ResponseFormatException が発生すること', () {
-      // dummy response
-      const resultJson = '''
+      test('返却された日付形式が想定した形式ではなかった場合、ResponseFormatException が発生すること', () {
+        // dummy response
+        const resultJson = '''
             {
               "weather_condition": "sunny",
               "max_temperature": 33,
@@ -190,61 +190,62 @@ void main() {
             }
           ''';
 
-      // stub
-      when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        // stub
+        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
 
-      // expect value
-      final expectException = throwsA(isA<ResponseFormatException>());
+        // expect value
+        final expectException = throwsA(isA<ResponseFormatException>());
 
-      // assert
-      expect(
-        () => providerContainer
-            .read(weatherRepositoryProvider)
-            .fetchWeather(area: area, date: date),
-        expectException,
-      );
+        // assert
+        expect(
+          () => providerContainer
+              .read(weatherRepositoryProvider)
+              .fetchWeather(area: area, date: date),
+          expectException,
+        );
+      });
     });
-  });
 
-  group('API から YumemiWeatherError が Throw された場合', () {
-    test('''
+    group('API から YumemiWeatherError が Throw された場合', () {
+      test('''
         YumemiWeatherError.invalidParameter が Throw された場合、
         InvalidParameterException が発生すること
         ''', () {
-      // stub
-      when(mockYumemiWeather.fetchWeather(any))
-          .thenThrow(YumemiWeatherError.invalidParameter);
+        // stub
+        when(mockYumemiWeather.fetchWeather(any))
+            .thenThrow(YumemiWeatherError.invalidParameter);
 
-      // expect value
-      final expectException = throwsA(isA<InvalidParameterException>());
+        // expect value
+        final expectException = throwsA(isA<InvalidParameterException>());
 
-      // assert
-      expect(
-        () => providerContainer
-            .read(weatherRepositoryProvider)
-            .fetchWeather(area: area, date: date),
-        expectException,
-      );
-    });
+        // assert
+        expect(
+          () => providerContainer
+              .read(weatherRepositoryProvider)
+              .fetchWeather(area: area, date: date),
+          expectException,
+        );
+      });
 
-    test('''
+      test('''
         YumemiWeatherError.unknown が Throw された場合、
         InvalidParameterException が発生すること
         ''', () {
-      // stub
-      when(mockYumemiWeather.fetchWeather(any))
-          .thenThrow(YumemiWeatherError.unknown);
+        // stub
+        when(mockYumemiWeather.fetchWeather(any))
+            .thenThrow(YumemiWeatherError.unknown);
 
-      // expect value
-      final expectException = throwsA(isA<UnknownException>());
+        // expect value
+        final expectException = throwsA(isA<UnknownException>());
 
-      // assert
-      expect(
-        () => providerContainer
-            .read(weatherRepositoryProvider)
-            .fetchWeather(area: area, date: date),
-        expectException,
-      );
+        // assert
+        expect(
+          () => providerContainer
+              .read(weatherRepositoryProvider)
+              .fetchWeather(area: area, date: date),
+          expectException,
+        );
+      });
     });
   });
 }
