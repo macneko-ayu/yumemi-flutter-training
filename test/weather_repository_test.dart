@@ -207,4 +207,46 @@ void main() {
       );
     });
   });
+
+  group('API から YumemiWeatherError が Throw された場合', () {
+    test('''
+        YumemiWeatherError.invalidParameter が Throw された場合、
+        InvalidParameterException が発生すること
+        ''', () {
+      // stub
+      when(mockYumemiWeather.fetchWeather(any))
+          .thenThrow(YumemiWeatherError.invalidParameter);
+
+      // expect value
+      final expectException = throwsA(isA<InvalidParameterException>());
+
+      // assert
+      expect(
+        () => providerContainer
+            .read(weatherRepositoryProvider)
+            .fetchWeather(area: area, date: date),
+        expectException,
+      );
+    });
+
+    test('''
+        YumemiWeatherError.unknown が Throw された場合、
+        InvalidParameterException が発生すること
+        ''', () {
+      // stub
+      when(mockYumemiWeather.fetchWeather(any))
+          .thenThrow(YumemiWeatherError.unknown);
+
+      // expect value
+      final expectException = throwsA(isA<UnknownException>());
+
+      // assert
+      expect(
+        () => providerContainer
+            .read(weatherRepositoryProvider)
+            .fetchWeather(area: area, date: date),
+        expectException,
+      );
+    });
+  });
 }
