@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/data/app_exception.dart';
+import 'package:flutter_training/data/date_time_converter.dart';
 import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/infra/yumemi_weather_provider.dart';
@@ -33,12 +34,12 @@ void main() {
     group('正常なレスポンスが返却された場合', () {
       test('適切な Weather かつ WeatherCondition.sunny に変換されること', () {
         // dummy response
-        const resultJson = '''
+        final resultJson = '''
             {
               "weather_condition": "sunny",
               "max_temperature": 33,
               "min_temperature": 11,
-              "date": "2024-06-01T00:00:00+09:00"
+              "date": "${const DateTimeConverter().toJson(date)}"
             }
           ''';
 
@@ -64,12 +65,12 @@ void main() {
       });
       test('適切な Weather かつ WeatherCondition.cloudy に変換されること', () {
         // dummy response
-        const resultJson = '''
+        final resultJson = '''
             {
               "weather_condition": "cloudy",
               "max_temperature": 33,
               "min_temperature": 11,
-              "date": "2024-06-01T00:00:00+09:00"
+              "date": "${const DateTimeConverter().toJson(date)}"
             }
           ''';
 
@@ -95,12 +96,12 @@ void main() {
       });
       test('適切な Weather かつ WeatherCondition.rainy に変換されること', () {
         // dummy response
-        const resultJson = '''
+        final resultJson = '''
             {
               "weather_condition": "rainy",
               "max_temperature": 33,
               "min_temperature": 11,
-              "date": "2024-06-01T00:00:00+09:00"
+              "date": "${const DateTimeConverter().toJson(date)}"
             }
           ''';
 
@@ -132,12 +133,12 @@ void main() {
         ResponseFormatException が throw されること
         ''', () {
         // dummy response
-        const resultJson = '''
+        final resultJson = '''
             {
               "weather_condition": "dummy",
               "max_temperature": 33,
               "min_temperature": 11,
-              "date": "2024-06-01T00:00:00+09:00"
+              "date": "${const DateTimeConverter().toJson(date)}"
             }
           ''';
 
@@ -158,12 +159,12 @@ void main() {
 
       test('返却された気温が num 型ではなかった場合、ResponseFormatException が throw されること', () {
         // dummy response
-        const resultJson = '''
+        final resultJson = '''
             {
               "weather_condition": "sunny",
               "max_temperature": "33",
               "min_temperature": 11,
-              "date": "2024-06-01T00:00:00+09:00"
+              "date": "${const DateTimeConverter().toJson(date)}"
             }
           ''';
 
