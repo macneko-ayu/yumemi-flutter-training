@@ -129,7 +129,7 @@ void main() {
     group('想定しないレスポンスが返却された場合', () {
       test('''
         WeatherCondition で定義されていない天気が返却された場合、
-        ResponseFormatException が発生すること
+        ResponseFormatException が throw されること
         ''', () {
         // dummy response
         const resultJson = '''
@@ -156,7 +156,7 @@ void main() {
         );
       });
 
-      test('返却された気温が num 型ではなかった場合、ResponseFormatException が発生すること', () {
+      test('返却された気温が num 型ではなかった場合、ResponseFormatException が throw されること', () {
         // dummy response
         const resultJson = '''
             {
@@ -182,7 +182,10 @@ void main() {
         );
       });
 
-      test('返却された日付形式が想定した形式ではなかった場合、ResponseFormatException が発生すること', () {
+      test('''
+        返却された日付形式が想定した形式ではなかった場合、
+        ResponseFormatException が throw されること
+        ''', () {
         // dummy response
         const resultJson = '''
             {
@@ -212,7 +215,7 @@ void main() {
     group('API から YumemiWeatherError が Throw された場合', () {
       test('''
         YumemiWeatherError.invalidParameter が Throw された場合、
-        InvalidParameterException が発生すること
+        InvalidParameterException が throw されること
         ''', () {
         // stub
         when(mockYumemiWeather.fetchWeather(any))
@@ -232,7 +235,7 @@ void main() {
 
       test('''
         YumemiWeatherError.unknown が Throw された場合、
-        InvalidParameterException が発生すること
+        UnknownException が throw されること
         ''', () {
         // stub
         when(mockYumemiWeather.fetchWeather(any))
