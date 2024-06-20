@@ -6,10 +6,10 @@
 
 ## ディレクトリ構造
 
-- `data` : Model, Entity を配置する。freezed による自動生成の対象
+- `data` : Model, Entity を配置する
   - `generated` : 自動生成されたファイルが格納される
 - `gen` : `assets.gen.dart` など自動生成されたファイルが配置される
-- `infra` : infra に関するクラスが格納される。freezed による自動生成の対象
+- `infra` : infra に関するクラスが格納される
   - `generated` : 自動生成されたファイルが格納される
 - `presentation` : View に関するクラスが格納される
     - `common` : 複数画面から利用されるクラスが格納される
