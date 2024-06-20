@@ -13,7 +13,7 @@ part 'generated/weather_repository.g.dart';
 
 @riverpod
 WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
-  final client = ref.read(yumemiWeatherProvider);
+  final client = ref.watch(yumemiWeatherProvider);
   return WeatherRepository(client: client);
 }
 
