@@ -3,40 +3,25 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_training/data/app_exception.dart';
 import 'package:flutter_training/data/weather.dart';
-import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/data/weather_request.dart';
+import 'package:flutter_training/infra/yumemi_weather_provider.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
+part 'generated/weather_repository.g.dart';
+
+@riverpod
+WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
+  final client = ref.watch(yumemiWeatherProvider);
+  return WeatherRepository(client: client);
+}
+
 class WeatherRepository {
-  final _client = YumemiWeather();
+  const WeatherRepository({required YumemiWeather client}) : _client = client;
+  final YumemiWeather _client;
 
-  WeatherCondition? fetchSimpleWeather() {
-    try {
-      final response = _client.fetchSimpleWeather();
-      return WeatherCondition.from(response);
-    } on UndefinedWeatherException {
-      rethrow;
-    }
-  }
-
-  WeatherCondition? fetchThrowsWeather(String area) {
-    try {
-      final response = _client.fetchThrowsWeather(area);
-      return WeatherCondition.from(response);
-    } on YumemiWeatherError catch (e) {
-      switch (e) {
-        case YumemiWeatherError.invalidParameter:
-          throw const InvalidParameterException();
-        case YumemiWeatherError.unknown:
-          throw const UnknownException();
-      }
-    } on UndefinedWeatherException {
-      rethrow;
-    }
-  }
-
-  Weather fetchWeather(String area, DateTime date) {
+  Weather fetchWeather({required String area, required DateTime date}) {
     final request =
         WeatherRequest(area: area, date: date)
             .toJson();

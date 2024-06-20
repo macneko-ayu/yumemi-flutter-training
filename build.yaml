@@ -4,15 +4,17 @@ targets:
       source_gen|combining_builder:
         options:
           build_extensions:
-            '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.g.dart'
+            '^lib/{{dir}}/{{file}}.dart': 'lib/{{dir}}/generated/{{file}}.g.dart'
           ignore_for_file:
             - type=lint
+            - duplicate_ignore
       freezed:
         options:
           build_extensions:
-            '^lib/data/{{}}.dart': 'lib/data/generated/{{}}.freezed.dart'
+            '^lib/{{dir}}/{{file}}.dart': 'lib/{{dir}}/generated/{{file}}.freezed.dart'
           ignore_for_file:
             - type=lint
+            - duplicate_ignore
       json_serializable:
         options:
           checked: true

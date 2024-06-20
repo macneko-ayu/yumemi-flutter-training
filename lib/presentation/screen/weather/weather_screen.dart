@@ -1,24 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/data/app_exception.dart';
-import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
-import 'package:flutter_training/repository/weather_repository.dart';
+import 'package:flutter_training/presentation/screen/weather/weather_notifier.dart';
 
-class WeatherScreen extends StatefulWidget {
+class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
   @override
-  State<WeatherScreen> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  final WeatherRepository _repository = WeatherRepository();
-  Weather? _currentWeather;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentWeather = ref.watch(weatherNotifierProvider);
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -26,19 +21,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherImage(_currentWeather?.weatherCondition),
+              _WeatherImage(weatherCondition: currentWeather?.weatherCondition),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: _TemperatureText.min(
-                        temperature: _currentWeather?.minTemperature,
+                        temperature: currentWeather?.minTemperature,
                       ),
                     ),
                     Expanded(
                       child: _TemperatureText.max(
-                        temperature: _currentWeather?.maxTemperature,
+                        temperature: currentWeather?.maxTemperature,
                       ),
                     ),
                   ],
@@ -50,7 +45,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     const SizedBox(
                       height: 80,
                     ),
-                    _Buttons(reloadTapped: _fetchWeather),
+                    _Buttons(
+                      closeTapped: () => Navigator.of(context).pop(),
+                      reloadTapped: () => _fetchWeather(context, ref),
+                    ),
                   ],
                 ),
               ),
@@ -61,19 +59,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  Future<void> _fetchWeather() async {
+  void _fetchWeather(BuildContext context, WidgetRef ref) {
     try {
-      final weather = _repository.fetchWeather('tokyo', DateTime.now());
-      setState(() {
-        _currentWeather = weather;
-      });
+      ref
+          .read(weatherNotifierProvider.notifier)
+          .fetchWeather(area: 'tokyo', date: DateTime.now());
     } on AppException catch (e) {
-      await _showErrorDialog(e.message);
+      unawaited(_showErrorDialog(context, e.message));
     }
   }
 
-  Future<void> _showErrorDialog(String message) async {
-    if (!mounted) {
+  Future<void> _showErrorDialog(BuildContext context, String message) async {
+    if (!context.mounted) {
       return;
     }
     await showDialog<void>(
@@ -96,7 +93,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 }
 
 class _WeatherImage extends StatelessWidget {
-  const _WeatherImage(WeatherCondition? weatherCondition)
+  const _WeatherImage({required WeatherCondition? weatherCondition})
       : _weatherCondition = weatherCondition;
 
   final WeatherCondition? _weatherCondition;
@@ -107,11 +104,11 @@ class _WeatherImage extends StatelessWidget {
       aspectRatio: 1,
       child: _weatherCondition == null
           ? const Placeholder()
-          : _convertImage(_weatherCondition),
+          : _convertImage(weatherCondition: _weatherCondition),
     );
   }
 
-  SvgPicture _convertImage(WeatherCondition weatherCondition) {
+  SvgPicture _convertImage({required WeatherCondition weatherCondition}) {
     return switch (weatherCondition) {
       WeatherCondition.sunny => Assets.sunny.svg(),
       WeatherCondition.cloudy => Assets.cloudy.svg(),
@@ -145,9 +142,13 @@ class _TemperatureText extends StatelessWidget {
 }
 
 class _Buttons extends StatelessWidget {
-  const _Buttons({required VoidCallback reloadTapped})
-      : _reloadTapped = reloadTapped;
+  const _Buttons({
+    required VoidCallback closeTapped,
+    required VoidCallback reloadTapped,
+  })  : _closeTapped = closeTapped,
+        _reloadTapped = reloadTapped;
 
+  final VoidCallback _closeTapped;
   final VoidCallback _reloadTapped;
 
   @override
@@ -156,9 +157,7 @@ class _Buttons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: _closeTapped,
           child: const Text('Close'),
         ),
         TextButton(

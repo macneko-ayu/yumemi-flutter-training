@@ -4,11 +4,6 @@ sealed class AppException implements Exception {
   final String message;
 }
 
-class UndefinedWeatherException extends AppException {
-  const UndefinedWeatherException()
-      : super(message: '想定していない天気情報を取得しました。時間を置いて再度お試しください。');
-}
-
 class ResponseFormatException extends AppException {
   const ResponseFormatException()
       : super(message: '想定していないレスポンスを取得しました。時間を置いて再度お試しください。');
