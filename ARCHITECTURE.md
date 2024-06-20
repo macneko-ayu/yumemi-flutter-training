@@ -46,5 +46,6 @@ flowchart TB
 
   NotifierProvider ==> Screen;
   NotifierProvider -.-> Screen;
+  RepositoryProvider -.-> NotifierProvider;
   APIClientProvider -.-> RepositoryProvider;
 ```
