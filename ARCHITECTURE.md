@@ -9,6 +9,8 @@
 - `data` : Model, Entity を配置する。freezed による自動生成の対象
   - `generated` : 自動生成されたファイルが格納される
 - `gen` : `assets.gen.dart` など自動生成されたファイルが配置される
+- `infra` : infra に関するクラスが格納される。freezed による自動生成の対象
+  - `generated` : 自動生成されたファイルが格納される
 - `presentation` : View に関するクラスが格納される
     - `common` : 複数画面から利用されるクラスが格納される
     - `screen` : 各画面に関するクラスが格納される。1 画面 1 ディレクトリとする
