@@ -70,6 +70,9 @@ class WeatherScreen extends ConsumerWidget {
   }
 
   Future<void> _showErrorDialog(BuildContext context, String message) async {
+    if (!context.mounted) {
+      return;
+    }
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
