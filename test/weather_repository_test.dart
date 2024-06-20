@@ -22,13 +22,16 @@ void main() {
   final date = DateTime(2024, 6);
 
   setUp(() {
-    reset(mockYumemiWeather);
     providerContainer = createContainer(
       overrides: [
         yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
       ],
     );
   });
+
+  tearDown(
+    () => reset(mockYumemiWeather),
+  );
 
   group('レスポンスに関するテスト群', () {
     group('正常なレスポンスが返却された場合', () {

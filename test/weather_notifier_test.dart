@@ -20,13 +20,16 @@ void main() {
   final date = DateTime(2024, 6);
 
   setUp(() {
-    reset(mockWeatherRepository);
     providerContainer = createContainer(
       overrides: [
         weatherRepositoryProvider.overrideWithValue(mockWeatherRepository),
       ],
     );
   });
+
+  tearDown(
+    () => reset(mockWeatherRepository),
+  );
 
   group('weatherNotifierProviderのテスト群', () {
     group('意図した値が取得できた場合', () {
