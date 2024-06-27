@@ -26,7 +26,7 @@ class WeatherRepository {
         WeatherRequest(area: area, date: date)
             .toJson();
     try {
-      final response = _client.fetchWeather(jsonEncode(request));
+      final response = _client.syncFetchWeather(jsonEncode(request));
       return Weather.fromJson(jsonDecode(response) as Map<String, dynamic>);
     } on YumemiWeatherError catch (e) {
       switch (e) {
