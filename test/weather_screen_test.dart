@@ -107,8 +107,8 @@ void main() {
       );
 
       // stub
-      when(mockYumemiWeather.fetchWeather(any))
-          .thenThrow(const ResponseFormatException());
+      const exception = ResponseFormatException();
+      when(mockYumemiWeather.fetchWeather(any)).thenThrow(exception);
 
       // action
       await tester.tap(find.text('Reload'));
@@ -117,7 +117,7 @@ void main() {
       // ダイアログ表示
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Error'), findsOneWidget);
-      expect(find.text(const ResponseFormatException().message), findsOneWidget);
+      expect(find.text(exception.message), findsOneWidget);
       expect(find.text('OK'), findsOneWidget);
 
       // ダイアログを閉じる
