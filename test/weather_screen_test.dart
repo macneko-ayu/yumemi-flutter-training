@@ -88,4 +88,44 @@ void main() {
       });
     }
   });
+
+  group('ダイアログ表示のテスト群', () {
+    testWidgets('''
+                ResponseFormatException が throw されたときにダイアログが表示され、
+                ${const ResponseFormatException().message} が表示されること
+                ''', (tester) async {
+      initializedDeviceSize(tester);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
+          ],
+          child: const MaterialApp(
+            home: WeatherScreen(),
+          ),
+        ),
+      );
+
+      // stub
+      when(mockYumemiWeather.fetchWeather(any))
+          .thenThrow(const ResponseFormatException());
+
+      // action
+      await tester.tap(find.text('Reload'));
+      await tester.pumpAndSettle();
+
+      // ダイアログ表示
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Error'), findsOneWidget);
+      expect(find.text(const ResponseFormatException().message), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
+
+      // ダイアログを閉じる
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+
+      // ダイアログ非表示
+      expect(find.byType(AlertDialog), findsNothing);
+    });
+  });
 }
