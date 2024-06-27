@@ -41,7 +41,7 @@ void main() {
         expect(actual, null);
       });
 
-      test('更新を行った際に正常にレスポンスが返却され意図した Weather が取得できること', () {
+      test('更新を行った際に正常にレスポンスが返却され意図した Weather が取得できること', () async {
         // dummy response
         final resultWeather = Weather(
           weatherCondition: WeatherCondition.sunny,
@@ -52,8 +52,8 @@ void main() {
 
         // stub
         when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenReturn(resultWeather);
-        providerContainer
+            .thenAnswer((_) async => resultWeather);
+        await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
 
@@ -70,7 +70,7 @@ void main() {
         更新を行った際に InvalidParameterException が throw された場合、
         InvalidParameterException が throw され、
         State の値が変更されないこと
-        ''', () {
+        ''', () async {
         // dummy response
         final resultWeather = Weather(
           weatherCondition: WeatherCondition.sunny,
@@ -81,8 +81,8 @@ void main() {
 
         // stub for valid response
         when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenReturn(resultWeather);
-        providerContainer
+            .thenAnswer((_) async => resultWeather);
+        await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
 

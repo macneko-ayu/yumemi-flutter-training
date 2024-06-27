@@ -3,6 +3,8 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:async' as _i4;
+
 import 'package:flutter_training/data/weather.dart' as _i2;
 import 'package:flutter_training/repository/weather_repository.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -35,7 +37,7 @@ class _FakeWeather_0 extends _i1.SmartFake implements _i2.Weather {
 /// See the documentation for Mockito's code generation for more information.
 class MockWeatherRepository extends _i1.Mock implements _i3.WeatherRepository {
   @override
-  _i2.Weather fetchWeather({
+  _i4.Future<_i2.Weather> fetchWeather({
     required String? area,
     required DateTime? date,
   }) =>
@@ -48,7 +50,7 @@ class MockWeatherRepository extends _i1.Mock implements _i3.WeatherRepository {
             #date: date,
           },
         ),
-        returnValue: _FakeWeather_0(
+        returnValue: _i4.Future<_i2.Weather>.value(_FakeWeather_0(
           this,
           Invocation.method(
             #fetchWeather,
@@ -58,8 +60,8 @@ class MockWeatherRepository extends _i1.Mock implements _i3.WeatherRepository {
               #date: date,
             },
           ),
-        ),
-        returnValueForMissingStub: _FakeWeather_0(
+        )),
+        returnValueForMissingStub: _i4.Future<_i2.Weather>.value(_FakeWeather_0(
           this,
           Invocation.method(
             #fetchWeather,
@@ -69,6 +71,6 @@ class MockWeatherRepository extends _i1.Mock implements _i3.WeatherRepository {
               #date: date,
             },
           ),
-        ),
-      ) as _i2.Weather);
+        )),
+      ) as _i4.Future<_i2.Weather>);
 }

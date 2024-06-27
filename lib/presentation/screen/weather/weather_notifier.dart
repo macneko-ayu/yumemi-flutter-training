@@ -1,4 +1,3 @@
-
 import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/repository/weather_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,8 +9,11 @@ class WeatherNotifier extends _$WeatherNotifier {
   @override
   Weather? build() => null;
 
-  void fetchWeather({required String area, required DateTime date}) {
-    final weather = ref
+  Future<void> fetchWeather({
+    required String area,
+    required DateTime date,
+  }) async {
+    final weather = await ref
         .read(weatherRepositoryProvider)
         .fetchWeather(area: area, date: date);
     state = weather;
