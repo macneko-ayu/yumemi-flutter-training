@@ -35,7 +35,7 @@ void main() {
     group('意図した値が取得できた場合', () {
       test('初めて取得する値が null であること', () {
         // actual
-        final actual = providerContainer.read(weatherNotifierProvider);
+        final actual = providerContainer.read(weatherNotifierProvider).value;
 
         // assert
         expect(actual, null);
@@ -58,7 +58,7 @@ void main() {
             .fetchWeather(area: area, date: date);
 
         // actual
-        final actual = providerContainer.read(weatherNotifierProvider);
+        final actual = providerContainer.read(weatherNotifierProvider).value;
 
         // assert
         expect(actual, resultWeather);
@@ -88,28 +88,28 @@ void main() {
 
         // assert for state
         expect(
-          providerContainer.read(weatherNotifierProvider),
+          providerContainer.read(weatherNotifierProvider).value,
           resultWeather,
         );
 
         // stub for throw exception
         when(mockWeatherRepository.fetchWeather(area: area, date: date))
             .thenThrow(const InvalidParameterException());
-
+        await providerContainer
+            .read(weatherNotifierProvider.notifier)
+            .fetchWeather(area: area, date: date);
         // expect exception value
-        final expectException = throwsA(isA<InvalidParameterException>());
+        const expectException = InvalidParameterException();
 
         // assert for exception
         expect(
-          () => providerContainer
-              .read(weatherNotifierProvider.notifier)
-              .fetchWeather(area: area, date: date),
+          providerContainer.read(weatherNotifierProvider).error,
           expectException,
         );
 
         // assert for state
         expect(
-          providerContainer.read(weatherNotifierProvider),
+          providerContainer.read(weatherNotifierProvider).value,
           resultWeather,
         );
       });
