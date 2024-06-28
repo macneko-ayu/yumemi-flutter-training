@@ -7,15 +7,16 @@ part 'generated/weather_notifier.g.dart';
 @riverpod
 class WeatherNotifier extends _$WeatherNotifier {
   @override
-  Weather? build() => null;
+  Future<Weather?> build() async => null;
 
   Future<void> fetchWeather({
     required String area,
     required DateTime date,
   }) async {
-    final weather = await ref
-        .read(weatherRepositoryProvider)
-        .fetchWeather(area: area, date: date);
-    state = weather;
+    final repository = ref.read(weatherRepositoryProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() {
+      return repository.fetchWeather(area: area, date: date);
+    });
   }
 }
