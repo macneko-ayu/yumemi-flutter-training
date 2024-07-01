@@ -1,24 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_test/flutter_svg_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/data/app_exception.dart';
-import 'package:flutter_training/data/date_time_converter.dart';
+import 'package:flutter_training/data/weather.dart';
 import 'package:flutter_training/data/weather_condition.dart';
-import 'package:flutter_training/infra/yumemi_weather_provider.dart';
 import 'package:flutter_training/presentation/screen/weather/weather_screen.dart';
+import 'package:flutter_training/repository/weather_repository.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
 
-import 'weather_repository_test.mocks.dart';
+import 'weather_screen_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<YumemiWeather>()])
+@GenerateNiceMocks([MockSpec<WeatherRepository>()])
 void main() {
-  final mockYumemiWeather = MockYumemiWeather();
+  final mockWeatherRepository = MockWeatherRepository();
 
   tearDown(
-    () => reset(mockYumemiWeather),
+    () => reset(mockWeatherRepository),
   );
 
   // 端末サイズを指定しないとレンダリングエラーが発生するため、iPhoneSE3相当のサイズに変更する
@@ -54,20 +55,23 @@ void main() {
       testWidgets('''
                   $condition のときは、$svg が表示され、
                   最高気温が 33 ℃、最低気温が 22 ℃ と表示されること''', (tester) async {
-        final resultJson = '''
-            {
-              "weather_condition": "${condition.name}",
-              "max_temperature": 33,
-              "min_temperature": 22,
-              "date": "${const DateTimeConverter().toJson(DateTime.now())}"
-            }
-        ''';
+        // dummy response
+        final resultWeather = Weather(
+          weatherCondition: condition,
+          maxTemperature: 33,
+          minTemperature: 22,
+          date: DateTime.now(),
+        );
+
+        // Completerで非同期処理を模倣する
+        final completer = Completer<Weather>();
 
         initializedDeviceSize(tester);
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
+              weatherRepositoryProvider
+                  .overrideWithValue(mockWeatherRepository),
             ],
             child: const MaterialApp(
               home: WeatherScreen(),
@@ -76,12 +80,31 @@ void main() {
         );
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(
+          mockWeatherRepository.fetchWeather(
+            area: anyNamed('area'),
+            date: anyNamed('date'),
+          ),
+        ).thenAnswer((_) async => completer.future);
+
+        // Reload タップ前はインジケータは非表示
+        expect(find.byType(CircularProgressIndicator), findsNothing);
 
         // action
         await tester.tap(find.text('Reload'));
-        await tester.pumpAndSettle();
+        await tester.pump();
 
+        // expect: Reload タップ後はインジケータは表示
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+        // データ取得を完了させる
+        completer.complete(resultWeather);
+        await tester.pump();
+
+        // expect: データ取得後はインジケータは非表示
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+
+        // expect: 期待する値が表示される
         expect(find.svgAssetWithPath(svg), findsOneWidget);
         expect(find.text('33 ℃'), findsOneWidget);
         expect(find.text('22 ℃'), findsOneWidget);
@@ -94,11 +117,14 @@ void main() {
                 InvalidParameterException が throw されたときにダイアログが表示され、
                 ${const InvalidParameterException().message} が表示されること
                 ''', (tester) async {
+      // Completerで非同期処理を模倣する
+      final completer = Completer<Weather>();
+
       initializedDeviceSize(tester);
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            yumemiWeatherProvider.overrideWithValue(mockYumemiWeather),
+            weatherRepositoryProvider.overrideWithValue(mockWeatherRepository),
           ],
           child: const MaterialApp(
             home: WeatherScreen(),
@@ -107,12 +133,27 @@ void main() {
       );
 
       // stub
-      const exception = InvalidParameterException();
-      when(mockYumemiWeather.fetchWeather(any)).thenThrow(exception);
+      when(
+        mockWeatherRepository.fetchWeather(
+          area: anyNamed('area'),
+          date: anyNamed('date'),
+        ),
+      ).thenAnswer((_) async => completer.future);
 
       // action
       await tester.tap(find.text('Reload'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+
+      // expect: Reload タップ後はインジケータは表示
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      // データ取得時にエラーを発生させる
+      const exception = InvalidParameterException();
+      completer.completeError(exception);
+      await tester.pump();
+
+      // expect: データ取得後はインジケータは非表示
+      expect(find.byType(CircularProgressIndicator), findsNothing);
 
       // ダイアログ表示
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -122,7 +163,7 @@ void main() {
 
       // ダイアログを閉じる
       await tester.tap(find.text('OK'));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // ダイアログ非表示
       expect(find.byType(AlertDialog), findsNothing);
