@@ -91,8 +91,8 @@ void main() {
 
   group('ダイアログ表示のテスト群', () {
     testWidgets('''
-                ResponseFormatException が throw されたときにダイアログが表示され、
-                ${const ResponseFormatException().message} が表示されること
+                InvalidParameterException が throw されたときにダイアログが表示され、
+                ${const InvalidParameterException().message} が表示されること
                 ''', (tester) async {
       initializedDeviceSize(tester);
       await tester.pumpWidget(
@@ -107,7 +107,7 @@ void main() {
       );
 
       // stub
-      const exception = ResponseFormatException();
+      const exception = InvalidParameterException();
       when(mockYumemiWeather.fetchWeather(any)).thenThrow(exception);
 
       // action
