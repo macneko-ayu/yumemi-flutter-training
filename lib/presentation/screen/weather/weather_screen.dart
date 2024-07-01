@@ -13,8 +13,8 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentWeatherState = ref.watch(weatherNotifierProvider);
-    final currentWeather = currentWeatherState.valueOrNull;
+    final currentWeather =
+        ref.watch(weatherNotifierProvider.select((value) => value.valueOrNull));
     ref.listen(weatherNotifierProvider, (previous, next) async {
       await next.maybeWhen(
         loading: () {
