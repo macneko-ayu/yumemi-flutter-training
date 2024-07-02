@@ -152,7 +152,7 @@ void main() {
       completer.completeError(exception);
       await tester.pump();
 
-      // expect: データ取得後はインジケータは非表示
+      // expect: エラー発生時はインジケータは非表示
       expect(find.byType(CircularProgressIndicator), findsNothing);
 
       // ダイアログ表示
