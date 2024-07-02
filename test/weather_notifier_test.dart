@@ -51,8 +51,12 @@ void main() {
         );
 
         // stub
-        when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenAnswer((_) async => resultWeather);
+        when(
+          mockWeatherRepository.fetchWeather(
+            area: anyNamed('area'),
+            date: anyNamed('date'),
+          ),
+        ).thenAnswer((_) async => resultWeather);
         await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
@@ -80,8 +84,12 @@ void main() {
         );
 
         // stub for valid response
-        when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenAnswer((_) async => resultWeather);
+        when(
+          mockWeatherRepository.fetchWeather(
+            area: anyNamed('area'),
+            date: anyNamed('date'),
+          ),
+        ).thenAnswer((_) async => resultWeather);
         await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
