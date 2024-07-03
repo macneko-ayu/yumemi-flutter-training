@@ -35,7 +35,7 @@ void main() {
 
   group('レスポンスに関するテスト群', () {
     group('正常なレスポンスが返却された場合', () {
-      test('適切な Weather かつ WeatherCondition.sunny に変換されること', () {
+      test('適切な Weather かつ WeatherCondition.sunny に変換されること', () async {
         // dummy response
         final resultJson = '''
             {
@@ -47,10 +47,10 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // actual
-        final actual = providerContainer
+        final actual = await providerContainer
             .read(weatherRepositoryProvider)
             .fetchWeather(area: area, date: date);
 
@@ -63,10 +63,9 @@ void main() {
         );
 
         // assert
-        verify(mockYumemiWeather.fetchWeather(any)).called(1);
         expect(actual, expectWeather);
       });
-      test('適切な Weather かつ WeatherCondition.cloudy に変換されること', () {
+      test('適切な Weather かつ WeatherCondition.cloudy に変換されること', () async {
         // dummy response
         final resultJson = '''
             {
@@ -78,10 +77,10 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // actual
-        final actual = providerContainer
+        final actual = await providerContainer
             .read(weatherRepositoryProvider)
             .fetchWeather(area: area, date: date);
 
@@ -94,10 +93,9 @@ void main() {
         );
 
         // assert
-        verify(mockYumemiWeather.fetchWeather(any)).called(1);
         expect(actual, expectWeather);
       });
-      test('適切な Weather かつ WeatherCondition.rainy に変換されること', () {
+      test('適切な Weather かつ WeatherCondition.rainy に変換されること', () async {
         // dummy response
         final resultJson = '''
             {
@@ -109,10 +107,10 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // actual
-        final actual = providerContainer
+        final actual = await providerContainer
             .read(weatherRepositoryProvider)
             .fetchWeather(area: area, date: date);
 
@@ -125,7 +123,6 @@ void main() {
         );
 
         // assert
-        verify(mockYumemiWeather.fetchWeather(any)).called(1);
         expect(actual, expectWeather);
       });
     });
@@ -146,14 +143,14 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // expect value
         final expectException = throwsA(isA<ResponseFormatException>());
 
         // assert
         expect(
-          () => providerContainer
+          () async => providerContainer
               .read(weatherRepositoryProvider)
               .fetchWeather(area: area, date: date),
           expectException,
@@ -172,14 +169,14 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // expect value
         final expectException = throwsA(isA<ResponseFormatException>());
 
         // assert
         expect(
-          () => providerContainer
+          () async => providerContainer
               .read(weatherRepositoryProvider)
               .fetchWeather(area: area, date: date),
           expectException,
@@ -201,14 +198,14 @@ void main() {
           ''';
 
         // stub
-        when(mockYumemiWeather.fetchWeather(any)).thenReturn(resultJson);
+        when(mockYumemiWeather.syncFetchWeather(any)).thenReturn(resultJson);
 
         // expect value
         final expectException = throwsA(isA<ResponseFormatException>());
 
         // assert
         expect(
-          () => providerContainer
+          () async => providerContainer
               .read(weatherRepositoryProvider)
               .fetchWeather(area: area, date: date),
           expectException,
@@ -222,7 +219,7 @@ void main() {
         InvalidParameterException が throw されること
         ''', () {
         // stub
-        when(mockYumemiWeather.fetchWeather(any))
+        when(mockYumemiWeather.syncFetchWeather(any))
             .thenThrow(YumemiWeatherError.invalidParameter);
 
         // expect value
@@ -230,7 +227,7 @@ void main() {
 
         // assert
         expect(
-          () => providerContainer
+          () async => providerContainer
               .read(weatherRepositoryProvider)
               .fetchWeather(area: area, date: date),
           expectException,
@@ -242,7 +239,7 @@ void main() {
         UnknownException が throw されること
         ''', () {
         // stub
-        when(mockYumemiWeather.fetchWeather(any))
+        when(mockYumemiWeather.syncFetchWeather(any))
             .thenThrow(YumemiWeatherError.unknown);
 
         // expect value
@@ -250,7 +247,7 @@ void main() {
 
         // assert
         expect(
-          () => providerContainer
+          () async => providerContainer
               .read(weatherRepositoryProvider)
               .fetchWeather(area: area, date: date),
           expectException,

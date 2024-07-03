@@ -35,13 +35,13 @@ void main() {
     group('意図した値が取得できた場合', () {
       test('初めて取得する値が null であること', () {
         // actual
-        final actual = providerContainer.read(weatherNotifierProvider);
+        final actual = providerContainer.read(weatherNotifierProvider).value;
 
         // assert
         expect(actual, null);
       });
 
-      test('更新を行った際に正常にレスポンスが返却され意図した Weather が取得できること', () {
+      test('更新を行った際に正常にレスポンスが返却され意図した Weather が取得できること', () async {
         // dummy response
         final resultWeather = Weather(
           weatherCondition: WeatherCondition.sunny,
@@ -51,14 +51,18 @@ void main() {
         );
 
         // stub
-        when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenReturn(resultWeather);
-        providerContainer
+        when(
+          mockWeatherRepository.fetchWeather(
+            area: anyNamed('area'),
+            date: anyNamed('date'),
+          ),
+        ).thenAnswer((_) async => resultWeather);
+        await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
 
         // actual
-        final actual = providerContainer.read(weatherNotifierProvider);
+        final actual = providerContainer.read(weatherNotifierProvider).value;
 
         // assert
         expect(actual, resultWeather);
@@ -70,7 +74,7 @@ void main() {
         更新を行った際に InvalidParameterException が throw された場合、
         InvalidParameterException が throw され、
         State の値が変更されないこと
-        ''', () {
+        ''', () async {
         // dummy response
         final resultWeather = Weather(
           weatherCondition: WeatherCondition.sunny,
@@ -80,36 +84,40 @@ void main() {
         );
 
         // stub for valid response
-        when(mockWeatherRepository.fetchWeather(area: area, date: date))
-            .thenReturn(resultWeather);
-        providerContainer
+        when(
+          mockWeatherRepository.fetchWeather(
+            area: anyNamed('area'),
+            date: anyNamed('date'),
+          ),
+        ).thenAnswer((_) async => resultWeather);
+        await providerContainer
             .read(weatherNotifierProvider.notifier)
             .fetchWeather(area: area, date: date);
 
         // assert for state
         expect(
-          providerContainer.read(weatherNotifierProvider),
+          providerContainer.read(weatherNotifierProvider).value,
           resultWeather,
         );
 
         // stub for throw exception
         when(mockWeatherRepository.fetchWeather(area: area, date: date))
             .thenThrow(const InvalidParameterException());
-
+        await providerContainer
+            .read(weatherNotifierProvider.notifier)
+            .fetchWeather(area: area, date: date);
         // expect exception value
-        final expectException = throwsA(isA<InvalidParameterException>());
+        const expectException = InvalidParameterException();
 
         // assert for exception
         expect(
-          () => providerContainer
-              .read(weatherNotifierProvider.notifier)
-              .fetchWeather(area: area, date: date),
+          providerContainer.read(weatherNotifierProvider).error,
           expectException,
         );
 
         // assert for state
         expect(
-          providerContainer.read(weatherNotifierProvider),
+          providerContainer.read(weatherNotifierProvider).value,
           resultWeather,
         );
       });

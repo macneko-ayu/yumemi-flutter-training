@@ -13,7 +13,43 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentWeather = ref.watch(weatherNotifierProvider);
+    ref.listen(weatherNotifierProvider, (previous, next) async {
+      if (!context.mounted) {
+        return;
+      }
+      await next.when(
+        loading: () {
+          // ローディング中はインジケータを表示する
+          showDialog<void>(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+        error: (error, _) async {
+          // インジケータを閉じる
+          Navigator.of(context).pop();
+          final String message;
+          if (error is AppException) {
+            message = error.message;
+          } else {
+            message = error.toString();
+          }
+          // エラーダイアログを表示する
+          await _showErrorDialog(context, message);
+        },
+        data: (data) async {
+          if (data != null) {
+            // データが取得できたらインジケータを閉じる
+            Navigator.of(context).pop();
+          }
+        },
+      );
+    });
+    final currentWeather =
+        ref.watch(weatherNotifierProvider.select((value) => value.valueOrNull));
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -47,7 +83,7 @@ class WeatherScreen extends ConsumerWidget {
                     ),
                     _Buttons(
                       closeTapped: () => Navigator.of(context).pop(),
-                      reloadTapped: () => _fetchWeather(context, ref),
+                      reloadTapped: () async => _fetchWeather(context, ref),
                     ),
                   ],
                 ),
@@ -59,14 +95,10 @@ class WeatherScreen extends ConsumerWidget {
     );
   }
 
-  void _fetchWeather(BuildContext context, WidgetRef ref) {
-    try {
-      ref
-          .read(weatherNotifierProvider.notifier)
-          .fetchWeather(area: 'tokyo', date: DateTime.now());
-    } on AppException catch (e) {
-      unawaited(_showErrorDialog(context, e.message));
-    }
+  Future<void> _fetchWeather(BuildContext context, WidgetRef ref) async {
+    await ref
+        .read(weatherNotifierProvider.notifier)
+        .fetchWeather(area: 'tokyo', date: DateTime.now());
   }
 
   Future<void> _showErrorDialog(BuildContext context, String message) async {

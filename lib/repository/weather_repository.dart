@@ -21,12 +21,14 @@ class WeatherRepository {
   const WeatherRepository({required YumemiWeather client}) : _client = client;
   final YumemiWeather _client;
 
-  Weather fetchWeather({required String area, required DateTime date}) {
-    final request =
-        WeatherRequest(area: area, date: date)
-            .toJson();
+  Future<Weather> fetchWeather({
+    required String area,
+    required DateTime date,
+  }) async {
+    final request = WeatherRequest(area: area, date: date).toJson();
     try {
-      final response = _client.fetchWeather(jsonEncode(request));
+      final response =
+          await compute(_client.syncFetchWeather, jsonEncode(request));
       return Weather.fromJson(jsonDecode(response) as Map<String, dynamic>);
     } on YumemiWeatherError catch (e) {
       switch (e) {
