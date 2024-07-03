@@ -13,8 +13,6 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentWeather =
-        ref.watch(weatherNotifierProvider.select((value) => value.valueOrNull));
     ref.listen(weatherNotifierProvider, (previous, next) async {
       await next.maybeWhen(
         loading: () {
@@ -51,6 +49,8 @@ class WeatherScreen extends ConsumerWidget {
         orElse: () {},
       );
     });
+    final currentWeather =
+        ref.watch(weatherNotifierProvider.select((value) => value.valueOrNull));
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
