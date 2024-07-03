@@ -14,11 +14,11 @@ class WeatherScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(weatherNotifierProvider, (previous, next) async {
+      if (!context.mounted) {
+        return;
+      }
       await next.when(
         loading: () {
-          if (!context.mounted) {
-            return;
-          }
           // ローディング中はインジケータを表示する
           showDialog<void>(
             barrierDismissible: false,
